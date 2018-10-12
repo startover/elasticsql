@@ -140,7 +140,11 @@ func handleSelectWhere(expr *sqlparser.BoolExpr, topLevel bool, parent *sqlparse
 		boolExpr := parentBoolExpr.Expr
 		return handleSelectWhere(&boolExpr, false, parent)
 	case *sqlparser.NotExpr:
-		return "", errors.New("elasticsql: not expression currently not supported")
+		resultStr, err := handleSelectWhere(&exprValue.Expr, false, parent)
+		if err != nil {
+			return "", err
+		}
+		return fmt.Sprintf(`{"bool" : {"must_not" : [%v]}}`, resultStr), nil
 	default:
 		return ``, errors.New("elaticsql: logically cannot reached here")
 	}
