@@ -145,9 +145,11 @@ func handlecomparisonExprOperator(comparisonExpr *sqlparser.ComparisonExpr, righ
 	case "like":
 		// 不是所有的字段都能进行like操作的，比如说整形等等
 		rightStr = strings.Replace(rightStr, `%`, `*`, -1)
+		rightStr = strings.Replace(rightStr, `_`, `?`, -1)
 		resultStr = fmt.Sprintf(`{"wildcard" : {"%v" : "%v"}}`, colNameStr, rightStr)
 	case "not like":
 		rightStr = strings.Replace(rightStr, `%`, `*`, -1)
+		rightStr = strings.Replace(rightStr, `_`, `?`, -1)
 		resultStr = fmt.Sprintf(`{"bool" : {"must_not" : {"wildcard" : {"%v" : "%v"}}}}`, colNameStr, rightStr)
 	case "not in":
 		// the default valTuple is ('1', '2', '3') like
